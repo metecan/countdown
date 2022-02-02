@@ -42,7 +42,7 @@ function App() {
           setTimeAsSeconds(time);
         },
         () => {
-          var alarmAudio = new Audio('https://res.cloudinary.com/allstar/video/upload/v1643729526/alarm_vbjr2d.mp3');
+          const alarmAudio = new Audio('https://res.cloudinary.com/allstar/video/upload/v1643729526/alarm_vbjr2d.mp3');
           alarmAudio.autoplay = true;
           alarmAudio.play();
         },

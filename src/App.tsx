@@ -1,25 +1,70 @@
 import React from 'react';
-import logo from './logo.svg';
-import './App.css';
+import CountdownTimer from './lib/logic/Countdown';
+import styled from 'styled-components';
+import TimerInputs from './components/TimerInputs';
+import { minutesToSeconds, secondsToMinutes } from './utils/timeConverters';
+
+const StyledContentWrapper = styled.div`
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 100vh;
+  width: 100vw;
+`;
+
+const StyledCountdownTimerWrappeer = styled.div`
+  width: 400px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+`;
+
+const StyledTimeOutput = styled.h1`
+  font-size: 6rem;
+  font-weight: bold;
+  margin: 40px 0;
+`;
 
 function App() {
+  const [minutes, setMinutes] = React.useState('00');
+  const [seconds, setSeconds] = React.useState('00');
+  const [timeAsSeconds, setTimeAsSeconds] = React.useState(0);
+  const [timeOutput, setTimeOutput] = React.useState('00:00');
+
+  const countdown = React.useMemo(
+    () =>
+      new CountdownTimer(
+        minutesToSeconds(`${minutes}:${seconds}`),
+        time => {
+          setTimeOutput(secondsToMinutes(time));
+          setTimeAsSeconds(time);
+        },
+        () => {
+          var alarmAudio = new Audio('https://res.cloudinary.com/allstar/video/upload/v1643729526/alarm_vbjr2d.mp3');
+          alarmAudio.autoplay = true;
+          alarmAudio.play();
+        },
+      ),
+    [minutes, seconds],
+  );
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <StyledContentWrapper>
+      <StyledCountdownTimerWrappeer>
+        <StyledTimeOutput>{timeOutput}</StyledTimeOutput>
+        <TimerInputs
+          realTime={timeAsSeconds}
+          countdown={countdown}
+          seconds={seconds}
+          setSeconds={setSeconds}
+          minutes={minutes}
+          setMinutes={setMinutes}
+          setOutput={setTimeOutput}
+        />
+      </StyledCountdownTimerWrappeer>
+    </StyledContentWrapper>
   );
 }
 
